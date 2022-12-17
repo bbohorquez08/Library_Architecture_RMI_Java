@@ -1,6 +1,8 @@
-package modelos;
+package sop_rmi.modelos;
 
-public class Credencial {
+import java.io.Serializable;
+
+public class Credencial implements Serializable {
     private String usuario;
     private String clave;
 

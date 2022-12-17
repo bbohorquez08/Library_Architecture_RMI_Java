@@ -1,6 +1,8 @@
-package modelos;
+package sop_rmi.modelos;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
     //ATRIBUTOS
     private int id;
     private String nombre;

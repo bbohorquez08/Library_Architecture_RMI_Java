@@ -1,9 +1,9 @@
-package servicios;
+package sop_rmi.servicios;
 
-import modelos.Credencial;
-import modelos.Libro;
-import modelos.Prestamo;
-import modelos.Usuario;
+import sop_rmi.modelos.Credencial;
+import sop_rmi.modelos.Libro;
+import sop_rmi.modelos.Prestamo;
+import sop_rmi.modelos.Usuario;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

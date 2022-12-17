@@ -1,6 +1,8 @@
-package modelos;
+package sop_rmi.modelos;
 
-public class Prestamo {
+import java.io.Serializable;
+
+public class Prestamo implements Serializable {
     private int codigo;
     private String fechaPrestamo;
     private String fechaDevolucion;

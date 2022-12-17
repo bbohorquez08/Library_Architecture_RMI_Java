@@ -1,9 +1,10 @@
-package servicios;
+package sop_rmi.servicios;
 
-import modelos.Credencial;
-import modelos.Libro;
-import modelos.Prestamo;
-import modelos.Usuario;
+import sop_rmi.modelos.Credencial;
+import sop_rmi.modelos.Libro;
+import sop_rmi.modelos.Prestamo;
+import sop_rmi.modelos.Usuario;
+
 import java.time.LocalDate;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,6 +20,17 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
     //LISTA DE PRESTAMOS
     private ArrayList<Prestamo> lstPrestamos;
 
+    public ArrayList<Usuario> getLstUsuarios() {
+        return lstUsuarios;
+    }
+
+    public ArrayList<Libro> getLstLibros() {
+        return lstLibros;
+    }
+
+    public ArrayList<Prestamo> getLstPrestamos() {
+        return lstPrestamos;
+    }
 
     public BibliotecaServicioImpl() throws RemoteException {
         this.lstUsuarios= new ArrayList<Usuario>();
@@ -52,11 +64,11 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
 
     @Override
     public String devolucionLibro(Libro objLibro) throws RemoteException {
-        String Result = "";
+        String Result = "D";
         Prestamo objPrestamo = new Prestamo();
         int posUsuario=0;
         int posPrestamo=0;
-        int bandera=0;
+        //int bandera=0;
 
         for (int i = 0; i < lstPrestamos.size(); i++) {
             if (lstPrestamos.get(i).getLibroPrestado().getNombre().equals(objLibro.getNombre())){
@@ -76,24 +88,27 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
             System.out.println("Multa de 10000");
             lstUsuarios.get(posUsuario).setDeuda(lstUsuarios.get(posUsuario).getDeuda()+10000);
             Result="E";
-            bandera=1;
-            //return Result;
+            lstPrestamos.remove(posPrestamo);
+            //bandera=1;
+            return Result;
         } else if (diasRetraso>=4 && diasRetraso<=8) {
             System.out.println("Multa de 10000 por los primeros 3 dias y 1000 por cada dia adicional");
             lstUsuarios.get(posUsuario).setDeuda(lstUsuarios.get(posUsuario).getDeuda()+10000);
             int dia=diasRetraso-3;
             lstUsuarios.get(posUsuario).setDeuda(lstUsuarios.get(posUsuario).getDeuda()+(dia*1000));
+            lstPrestamos.remove(posPrestamo);
             Result="F";
-            bandera=1;
-            //return  Result;
+            //bandera=1;
+            return  Result;
         } else if (diasRetraso>=8) {
             System.out.println("Multa de 2000 por dia");
             lstUsuarios.get(posUsuario).setDeuda(lstUsuarios.get(posUsuario).getDeuda()+(diasRetraso*2000));
+            lstPrestamos.remove(posPrestamo);
             Result="G";
-            bandera=1;
-            //return Result;
+            //bandera=1;
+            return Result;
         }
-
+        /*
         if(bandera==1){
             System.out.println("Devolucion de libro exitosa");
             lstPrestamos.remove(posPrestamo);
@@ -102,6 +117,8 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
             System.out.println("Ha ocurrido un error");
             Result="D";
         }
+        */
+
 
 
         return Result;
@@ -148,12 +165,12 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
 
     @Override
     public Usuario consultarUsuario(int id) throws RemoteException {
-        Usuario objUsuario = new Usuario();
+        Usuario objUsuario = null;
         System.out.println("Invocando a consultar usuario");
         if(lstUsuarios.isEmpty()){
             System.out.println("No hay usuarios");
         }else {
-            if (lstUsuarios.get(id)!=null){
+            if (id!=this.lstUsuarios.size() &&lstUsuarios.get(id)!=null){
                 objUsuario=lstUsuarios.get(id);
             }
         }
@@ -163,12 +180,12 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
     @Override
     public Libro consultarLibro(int codigo) throws RemoteException {
 
-        Libro objLibro = new Libro();
+        Libro objLibro = null;
         System.out.println("Invocando a consultar libro");
         if(lstLibros.isEmpty()){
             System.out.println("No hay libros en el sistema");
         }else{
-            if (lstLibros.get(codigo)!=null){
+            if (codigo!=this.lstLibros.size() && lstLibros.get(codigo)!=null ){
              objLibro=lstLibros.get(codigo);
             }
         }
@@ -177,12 +194,12 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
 
     @Override
     public Prestamo consultarPrestamo(int codigo) throws RemoteException {
-        Prestamo objPrestamo = new Prestamo();
+        Prestamo objPrestamo = null;
         System.out.println("Invocando a consultar prestamo");
         if (lstPrestamos.isEmpty()){
             System.out.println("No hay libros en el sistema");
         }else {
-            if(lstPrestamos.get(codigo)!=null){
+            if(codigo!=this.lstPrestamos.size() && lstPrestamos.get(codigo)!=null){
                 objPrestamo=lstPrestamos.get(codigo);
             }
         }

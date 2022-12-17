@@ -1,6 +1,8 @@
-package modelos;
+package sop_rmi.modelos;
 
-public class Libro {
+import java.io.Serializable;
+
+public class Libro implements Serializable {
     private int codigo;
     private String nombre;
     private String areaConocimiento;
