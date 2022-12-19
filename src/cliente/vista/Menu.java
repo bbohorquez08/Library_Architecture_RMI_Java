@@ -60,15 +60,95 @@ public class Menu {
                 privilegiosAdministrador();
                 break;
             case "U":
-                //FALTAAAAAAAAAA
+                privilegiosUsuario();
                 break;
             case "N":
                 System.out.println("Usuario no valido, verifique usuario y clave");
                 break;
+            default:
+                System.out.println("Opción incorrecta");
         }
 
     }
 
+    private void privilegiosUsuario() throws RemoteException {
+        int opc=0;
+        int opcMenuLibro=0;
+        String busqueda="";
+        String caso="";
+        System.out.println("Inicio de sesion valido, sesion con privilegios de usuario");
+        do {
+            System.out.println("========Menu Usuario========");
+            System.out.println("| 1. Buscar libros por area de conocimiento, autor o editorial |");
+            System.out.println("| 2. Solicitar prestamo |");
+            System.out.println("| 3. Salir |");
+            System.out.println("==================================================");
+            opc = UtilidadesConsola.leerEntero();
+            switch (opc){
+                case 1:
+                    System.out.println("========Menu Busqueda Libro========");
+                    System.out.println("| 1. Por area de conocimiento |");
+                    System.out.println("| 2. Por autor|");
+                    System.out.println("| 3. Por editorial |");
+                    System.out.println("==================================================");
+                    opcMenuLibro = UtilidadesConsola.leerEntero();
+                    switch (opcMenuLibro){
+                        case 1:
+                            System.out.println("Digite area de conocimiento");
+                            caso= UtilidadesConsola.leerCadena();
+                            break;
+                        case 2:
+                            System.out.println("Digite autor: ");
+                            caso= UtilidadesConsola.leerCadena();
+                            break;
+                        case 3:
+                            System.out.println("Digite edutorial: ");
+                            caso= UtilidadesConsola.leerCadena();
+                            break;
+                        default:
+                            System.out.println("Opción incorrecta: ");
+                    }
+                    System.out.println("=======================Libros filtrados==========================");
+                    int i =0;
+                    while (true){
+                        Libro objLibro=this.bibliotecaControllerRemoto.consultarLibros(i);
+                        if(Objects.isNull(objLibro)){
+                            break;
+                        }
+                        switch (opcMenuLibro) {
+                            case 1:
+                                busqueda=objLibro.getAreaConocimiento();
+                                break;
+                            case 2:
+                                busqueda=objLibro.getAutor();
+                                break;
+                            case 3:
+                                busqueda=objLibro.getEditorial();
+                                break;
+                        }
+
+                        if (busqueda.equals(caso)){
+                            System.out.println("=====================");
+                            System.out.println("Codigo: "+objLibro.getCodigo());
+                            System.out.println("Nombre: "+objLibro.getNombre());
+                            System.out.println("Autor: "+objLibro.getAutor());
+                            System.out.println("Editorial: "+objLibro.getEditorial());
+                            System.out.println("Area conocimiento: "+objLibro.getAreaConocimiento());
+                        }
+                        i=i+1;
+                    }
+                    break;
+                case 2:
+                    solicitarPrestamo();
+                    break;
+                case 3:
+                    System.out.println("Hasta pronto!!!!");
+                    break;
+                default:
+                    System.out.println("Opción incorrecta");
+            }
+        }while(opc!=3);
+    }
     private void privilegiosAdministrador() throws RemoteException {
         int opc=0;
         System.out.println("Inicio de sesion valido, sesion con privilegios de administrador");
@@ -102,8 +182,45 @@ public class Menu {
                 case 6:
                     System.out.println("Hasta pronto!!!!");
                     break;
+                default:
+                    System.out.println("Opción incorrecta");
             }
         }while(opc!=6);
+    }
+
+    private void solicitarPrestamo() throws RemoteException {
+
+        System.out.println("Digite identificacion por favor: ");
+        int id=UtilidadesConsola.leerEntero();
+        Usuario objUsuario= this.bibliotecaControllerRemoto.consultarUsuarioPorId(id);
+        if(Objects.isNull(objUsuario)){
+            System.out.println("Error, usuario no existente en el sistema");
+        }
+        if(objUsuario.getDeuda()>=20000){
+            System.out.println("Error, no puedes solicitar un prestamo ya que tu deuda es mayor a 20000");
+        }else{
+            System.out.println("Digite codigo del prestamo: ");
+            int codigo= UtilidadesConsola.leerEntero();
+            System.out.println("Digite codigo del libro: ");
+            int codigoLibro= UtilidadesConsola.leerEntero();
+            System.out.println("Digite fecha del prestamo: ");
+            String fechaPrestamo= UtilidadesConsola.leerCadena();
+            System.out.println("Digite fecha de devolucion; ");
+            String fechaDevolucion= UtilidadesConsola.leerCadena();
+
+            Libro objLibro=this.bibliotecaControllerRemoto.consultarLibroPorCodigo(codigoLibro);
+            if(Objects.isNull(objLibro)){
+                System.out.println("Libro no encontrado, por favor realiza de nuevo la busqueda y verifica el codigo");
+            }
+
+            boolean res= this.bibliotecaControllerRemoto.realizarPrestamo(new Prestamo(codigo, fechaPrestamo,
+                    fechaDevolucion, objLibro,objUsuario));
+            if(res){
+                System.out.println("Prestamo realizado correctamente");
+            }else{
+                System.out.println("Verifica informacion, ocurrio un error");
+            }
+        }
     }
 
     private void registrarUsuario() throws RemoteException {
@@ -154,11 +271,12 @@ public class Menu {
 
         int i =0;
         while (true){
-            Libro objLibro=this.bibliotecaControllerRemoto.consultarLibro(i);
+            Libro objLibro=this.bibliotecaControllerRemoto.consultarLibros(i);
             if(Objects.isNull(objLibro)){
                 break;
             }else{
                 System.out.println("=====================");
+                System.out.println("Codigo: "+objLibro.getCodigo());
                 System.out.println("Nombre: "+objLibro.getNombre());
                 System.out.println("Autor: "+objLibro.getAutor());
                 System.out.println("Editorial: "+objLibro.getEditorial());
@@ -173,7 +291,7 @@ public class Menu {
         int id= UtilidadesConsola.leerEntero();
         int i =0;
         while (true){
-            Prestamo objPrestamo=this.bibliotecaControllerRemoto.consultarPrestamo(i);
+            Prestamo objPrestamo=this.bibliotecaControllerRemoto.consultarPrestamos(i);
             if(Objects.isNull(objPrestamo)){
                 break;
             }else{
@@ -194,9 +312,8 @@ public class Menu {
         Libro objLibro = null;
         int i =0;
         while (true){
-            Prestamo objPrestamo=this.bibliotecaControllerRemoto.consultarPrestamo(i);
+            Prestamo objPrestamo=this.bibliotecaControllerRemoto.consultarPrestamos(i);
             if(Objects.isNull(objPrestamo)){
-                System.out.println("El libro no se encuentra prestado");
                 break;
             }else{
                 if(objPrestamo.getLibroPrestado().getNombre().equals(nombre)){

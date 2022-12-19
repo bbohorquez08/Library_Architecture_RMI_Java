@@ -18,11 +18,12 @@ public interface BibliotecaServicio extends Remote {
     //METODO QUE ME PERMITE AUTENTICAR USUARIO EN EL SISTEMA
     public String iniciarSesion(Credencial objCredencial) throws RemoteException;
     //METODO QUE ME PERMITE CONSULTAR USUARIOS
-    public Usuario consultarUsuario(int id) throws RemoteException;
+    public Usuario consultarUsuarioPorId(int id) throws RemoteException;
     //METODO QUE ME PERMITE CONSULTAR LIBROS
-    public Libro consultarLibro(int codigo) throws RemoteException;
+    public Libro consultarLibros(int codigo) throws RemoteException;
     //METODO QUE ME PERMITE CONSULTAR PRESTAMOS
-    public Prestamo consultarPrestamo(int codigo) throws RemoteException;
+    public Prestamo consultarPrestamos(int codigo) throws RemoteException;
     //METODO QUE ME PERMITE REALIZAR UN PRESTAMO
     public boolean realizarPrestamo(Prestamo objPrestamo) throws RemoteException;
+    public Libro consultarLibroPorCodigo(int codigo) throws RemoteException;
 }

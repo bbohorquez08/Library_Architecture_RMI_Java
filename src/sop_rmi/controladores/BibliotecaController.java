@@ -41,22 +41,27 @@ public class BibliotecaController extends UnicastRemoteObject implements Bibliot
     }
 
     @Override
-    public Usuario consultarUsuario(int id) throws RemoteException {
-        return this.bibliotecaServicio.consultarUsuario(id);
+    public Usuario consultarUsuarioPorId(int id) throws RemoteException {
+        return this.bibliotecaServicio.consultarUsuarioPorId(id);
     }
 
     @Override
-    public Libro consultarLibro(int codigo) throws RemoteException {
-        return this.bibliotecaServicio.consultarLibro(codigo);
+    public Libro consultarLibros(int codigo) throws RemoteException {
+        return this.bibliotecaServicio.consultarLibros(codigo);
     }
 
     @Override
-    public Prestamo consultarPrestamo(int codigo) throws RemoteException {
-        return this.bibliotecaServicio.consultarPrestamo(codigo);
+    public Prestamo consultarPrestamos(int codigo) throws RemoteException {
+        return this.bibliotecaServicio.consultarPrestamos(codigo);
     }
 
     @Override
     public boolean realizarPrestamo(Prestamo objPrestamo) throws RemoteException {
         return this.bibliotecaServicio.realizarPrestamo(objPrestamo);
+    }
+
+    @Override
+    public Libro consultarLibroPorCodigo(int codigo) throws RemoteException {
+        return this.bibliotecaServicio.consultarLibroPorCodigo(codigo);
     }
 }

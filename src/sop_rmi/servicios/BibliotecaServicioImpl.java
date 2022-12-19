@@ -164,21 +164,22 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
     }
 
     @Override
-    public Usuario consultarUsuario(int id) throws RemoteException {
+    public Usuario consultarUsuarioPorId(int id) throws RemoteException {
         Usuario objUsuario = null;
         System.out.println("Invocando a consultar usuario");
         if(lstUsuarios.isEmpty()){
             System.out.println("No hay usuarios");
         }else {
-            if (id!=this.lstUsuarios.size() &&lstUsuarios.get(id)!=null){
-                objUsuario=lstUsuarios.get(id);
+            int pos=consultaUsuario(id);
+            if(pos!=-1){
+                objUsuario=this.lstUsuarios.get(pos);
             }
         }
         return objUsuario;
     }
 
     @Override
-    public Libro consultarLibro(int codigo) throws RemoteException {
+    public Libro consultarLibros(int codigo) throws RemoteException {
 
         Libro objLibro = null;
         System.out.println("Invocando a consultar libro");
@@ -193,11 +194,11 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
     }
 
     @Override
-    public Prestamo consultarPrestamo(int codigo) throws RemoteException {
+    public Prestamo consultarPrestamos(int codigo) throws RemoteException {
         Prestamo objPrestamo = null;
         System.out.println("Invocando a consultar prestamo");
         if (lstPrestamos.isEmpty()){
-            System.out.println("No hay libros en el sistema");
+            System.out.println("No hay prestamos en el sistema");
         }else {
             if(codigo!=this.lstPrestamos.size() && lstPrestamos.get(codigo)!=null){
                 objPrestamo=lstPrestamos.get(codigo);
@@ -218,11 +219,48 @@ public class BibliotecaServicioImpl extends UnicastRemoteObject implements Bibli
         }
     }
 
+    @Override
+    public Libro consultarLibroPorCodigo(int codigo) throws RemoteException {
+        Libro objLibro = null;
+        System.out.println("Invocando a consultar libro");
+        if(lstLibros.isEmpty()){
+            System.out.println("No hay libros");
+        }else {
+            int pos=consultaLibro(codigo);
+            if(pos!=-1){
+                objLibro=this.lstLibros.get(pos);
+            }
+        }
+        return objLibro;
+    }
+
     public int validarFecha(String fecha){
         LocalDate fechaDevolucion = LocalDate.parse(fecha);
         LocalDate fechaActual = LocalDate.now();
         long diasRetraso = ChronoUnit.DAYS.between(fechaDevolucion,fechaActual);
         int diastotales= (int) diasRetraso;
         return diastotales;
+    }
+
+    private int consultaUsuario(int id){
+        int resultado=-1;
+        for (int i = 0; i < this.lstUsuarios.size(); i++) {
+            if(this.lstUsuarios.get(i).getId()==id){
+                resultado=i;
+                break;
+            }
+        }
+        return resultado;
+    }
+
+    private int consultaLibro(int codigo){
+        int resultado=-1;
+        for (int i = 0; i < this.lstLibros.size(); i++) {
+            if(this.lstLibros.get(i).getCodigo()==codigo){
+                resultado=i;
+                break;
+            }
+        }
+        return resultado;
     }
 }
